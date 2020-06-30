@@ -18,7 +18,7 @@ class CreateBooksTable extends Migration
             $table->increments('id');
             $table->string('title', 200);
             $table->float('price');
-            $table->unsignedInteger('author_id');
+            $table->unsignedBigInteger('author_id');
             $table->timestamps();
             $table->foreign('author_id')->references('id')->on('authors');
         });

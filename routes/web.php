@@ -18,13 +18,14 @@ Route::get('/', function () {
 });
 
 Route::get('books', 'BookController@index');
+Route::get('books/{order}', 'BookController@index');
 
-Route::get('book/{id}', 'BookController@show');
+Route::get('book/show/{id}', 'BookController@show');
 
 Route::get('book/edit/{id}', 'BookController@edit')->name('book.edit');;
 Route::put('book/edit/{id}', 'BookController@update');
 
-Route::get('/books/create', 'BookController@create');
-Route::post('/books/create', 'BookController@store');
+Route::get('book/create', 'BookController@create');
+Route::post('book/create', 'BookController@store');
 
 Route::delete('book/delete/{id}', 'BookController@destroy');

@@ -8,6 +8,6 @@
         @method('put')
         <input type="text" name="title" value="{{$book->title}}">
         <input type="number" step="0.01" name="price" value="{{$book->price}}">
-        <input type="submit" name="submit" value="Create">
+        <input type="submit" name="submit" value="Edit">
     </form>
 @endsection

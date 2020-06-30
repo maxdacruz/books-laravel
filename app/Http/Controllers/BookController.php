@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Book;
 use App\Author;
+use Validator;
+
 
 class BookController extends Controller
 {
@@ -13,9 +15,19 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($sort = null)
     {
-        $books = Book::all();
+        if ($sort == null)
+            $books = Book::simplePaginate(10);
+        else
+            $books = Book::orderBy('price', $sort)->simplePaginate(10);
+
+        return view('books', ['books' => $books]);
+    }
+
+    public function sort($sort)
+    {
+        $books = Book::orderBy('price', $sort)->simplePaginate(10);
         return view('books', ['books' => $books]);
     }
 
@@ -26,7 +38,9 @@ class BookController extends Controller
      */
     public function create()
     {
-        return view('new-book');
+        $authors = Author::all();
+
+        return view('new-book', ['authors' => $authors]);
     }
 
     /**
@@ -37,20 +51,32 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'price' => 'required',
+            'id' => 'required|email',
+        ]);
+
+        if ($validator->passes()) {
+            $book = new Book();
+            $book->title = $request->title;
+            $book->price = $request->price;
+            $book->author_id = $request->id;
+
+            $book->save();
+
+            return response()->json(['success' => 'Added new records.']);
+        }
+
+
+        return response()->json(['error' => $validator->errors()->all()]);
+
+        /*
         $validatedData = $request->validate([
             'title' => 'required|max:30',
             'price' => 'required|numeric'
         ]);
-
-
-        $book = new Book();
-        $book->title = $request->title;
-        $book->price = $request->price;
-        $book->author_id = 10;
-
-        $book->save();
-
-        return redirect('/books');
+        */
     }
 
     /**
